@@ -46,7 +46,7 @@ def save_to_database(data: pd.DataFrame, database_connection: sqlite3.Connection
     
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Weather (
-            
+            Timestamp TEXT
             Country TEXT,
             City TEXT,
             Temperature REAL,
@@ -62,8 +62,8 @@ def save_to_database(data: pd.DataFrame, database_connection: sqlite3.Connection
     for _, row in data.iterrows():
         cursor.execute("""
         INSERT INTO Weather (Timestamp, Country, City, Temperature, Humidity, Low_Temperature, High_Temperature, Weather_Category, Wind_Speed)
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (timestamp
               row['Country'],
               row['City'],
               row['Temperature'],
