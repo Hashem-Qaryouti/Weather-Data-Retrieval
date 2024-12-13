@@ -1,5 +1,31 @@
 import requests
 import pandas as pd
+import sqlite3
+
+def database_connection(database_name: str) -> sqlite3.Connection:
+    ''' This function connects to an existing SQLite database, if the database does not exist,
+        it implicitly creates a new one.
+
+        Args:
+        database_name (str): It represents the database name
+
+        Return:
+        Object (sqlite3.Connection): returns a connection object
+    '''
+    if not isinstance(database_name, str):
+        raise TypeError(f'The database name (e.g., {database_name}) should be of type string')
+
+    try:
+        connection = sqlite3.connect(database_name, timeout=10)
+        return connection
+    except sqlite3.OperationalError as op_error:
+        raise sqlite3.OperationalError(f'Operational error occured: {op_error}')
+    except sqlite3.DatabaseError as db_error:
+        raise sqlite3.DatabaseError(f'Database error occured: {db_error}')
+    except sqlite3.Error as erroe:
+        raise sqlite3.Error(f'An error happened while connection to the database: {error}')
+    except Exception as e:
+        raise Exception(f'An unexpected error occured: {e}')
 
 def fetch_weather_data(city: str,
                        country=None,
