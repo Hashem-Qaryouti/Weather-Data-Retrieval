@@ -166,8 +166,8 @@ def parse_json(data: dict)-> pd.DataFrame:
     return dataframe
 
 
-weather_data = fetch_weather_data(city='portland', state='OR',units='imperial')
-parsed_weather_data_df = parse_json(weather_data)
-print(parsed_weather_data_df)
-database_connection = database_connection(database_name)
-save_to_database(parsed_weather_data_df,database_connection)
+#weather_data = fetch_weather_data(city='portland', state='OR',units='imperial')
+#parsed_weather_data_df = parse_json(weather_data)
+#print(parsed_weather_data_df)
+#database_connection = database_connection(database_name)
+#save_to_database(parsed_weather_data_df,database_connection)
