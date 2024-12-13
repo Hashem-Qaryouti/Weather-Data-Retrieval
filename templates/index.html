@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather Data Retrieval</h1>
+    <form id="weatherForm">
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required>
+        <label for="country">Country (optional):</label>
+        <input type="text" id="country" name="country" placeholder="US">
+        <label for="state">State (optional):</label>
+        <input type="text" id="state" name="state">
+        <label for="units">Units:</label>
+        <select id="units" name="units">
+            <option value="metric">metric</option>
+            <option value="imperial">imperial</option>
+            <option value="standard">standard</option>
+        </select>
+        <button type="submit">Get Weather</button>
+    </form>
+
+    <div id="result"></div>
+    <!-- Store Data Button -->
+    <div id="storeDataSection" style="margin-top: 20px;">
+        <button id="storeDataButton">Store Data in Database</button>
+        <p id="storeDataStatus"></p>
+    </div>
+
+    
+
+    <script>
+        document.getElementById('weatherForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent form from reloading page
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch('/weather', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        // Expecting HTML response (not JSON)
+        const result = await response.text();
+
+        if (response.ok) {
+            document.getElementById('result').innerHTML = result;
+        } else {
+            document.getElementById('result').innerText = `Error: ${result}`;
+        }
+    } catch (error) {
+        document.getElementById('result').innerText = `Error: ${error.message}`;
+    }
+});
+
+document.getElementById('storeDataButton').addEventListener('click', async () => {
+    try {
+        const response = await fetch('/store', {
+            method: 'POST',
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            document.getElementById('storeDataStatus').innerText = 'Data stored successfully!';
+        } else {
+            document.getElementById('storeDataStatus').innerText = `Error: ${result.error}`;
+        }
+    } catch (error) {
+        document.getElementById('storeDataStatus').innerText = `Error: ${error.message}`;
+    }
+});
+    </script>
+</body>
+</html>
