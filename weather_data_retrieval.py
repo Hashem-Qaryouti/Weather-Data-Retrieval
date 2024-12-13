@@ -63,7 +63,7 @@ def save_to_database(data: pd.DataFrame, database_connection: sqlite3.Connection
         cursor.execute("""
         INSERT INTO Weather (Timestamp, Country, City, Temperature, Humidity, Low_Temperature, High_Temperature, Weather_Category, Wind_Speed)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (timestamp
+        """, (timestamp,
               row['Country'],
               row['City'],
               row['Temperature'],
