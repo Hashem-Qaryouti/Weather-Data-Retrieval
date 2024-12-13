@@ -4,6 +4,7 @@ import sqlite3
 from datetime import datetime
 
 database_name = 'weather_database.db'
+weather_df_global = None
 
 def database_connection(database_name: str) -> sqlite3.Connection:
     ''' This function connects to an existing SQLite database, if the database does not exist,
@@ -141,6 +142,8 @@ def parse_json(data: dict)-> pd.DataFrame:
         Return:
             parsed_data(pd.DataFrame): It represents the data to be saved in the database
     '''
+    global weather_df_global
+
     country = data['location']['country']
     city = data['location']['city']
     temp = data['forecast']['temp']
@@ -163,6 +166,7 @@ def parse_json(data: dict)-> pd.DataFrame:
     }
 
     dataframe = pd.DataFrame(weather_dict)
+    weather_df_global = dataframe
     return dataframe
 
 
