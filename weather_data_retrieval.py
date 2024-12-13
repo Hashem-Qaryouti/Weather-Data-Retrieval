@@ -1,4 +1,5 @@
 import requests
+import pandas as pd
 
 def fetch_weather_data(city: str,
                        country=None,
@@ -47,6 +48,38 @@ def fetch_weather_data(city: str,
         print(f"Error fetching data from the given URL: {e}")
         return None
     
+def parse_json(data: dict)-> pd.DataFrame:
+    ''' This function parses the json-formatted data
+
+        Args:
+            data (dict): It represents weather raw data
+
+        Return:
+            parsed_data(pd.DataFrame): It represents the data to be saved in the database
+    '''
+    country = data['location']['country']
+    city = data['location']['city']
+    temp = data['forecast']['temp']
+    humidity = data['forecast']['humidity']
+    low_temp = data['forecast']['low']
+    high_temp = data['forecast']['high']
+    weather_category = data['weather']['category']
+    wind_speed = data['wind']['speed']
+
+    # Create a dictionary for the DataFrame
+    weather_dict = {
+        "Country": [country],
+        "City": [city],
+        "Temperature": [temp],
+        "Humidity": [humidity],
+        "Low Temperature": [low_temp],
+        "High Temperature": [high_temp],
+        "Weather Category": [weather_category],
+        "Wind Speed": [wind_speed],
+    }
+
+    dataframe = pd.DataFrame(weather_dict)
+    return dataframe
 
 weather_data = fetch_weather_data(city='portland', state='OR',units='imperial')
 print(weather_data)
