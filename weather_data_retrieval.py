@@ -40,9 +40,13 @@ def fetch_weather_data(city: str,
 
     try:
         response = requests.get(api_url, params=params, headers=None)
-        print(response.url)
+        print(f'The url is {response.url}')
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data from the given URL: {e}")
         return None
+    
+
+weather_data = fetch_weather_data(city='portland', state='OR',units='imperial')
+print(weather_data)
