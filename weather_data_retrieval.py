@@ -26,6 +26,61 @@ def database_connection(database_name: str) -> sqlite3.Connection:
         raise sqlite3.Error(f'An error happened while connection to the database: {error}')
     except Exception as e:
         raise Exception(f'An unexpected error occured: {e}')
+    
+def save_to_database(data: pd.DataFrame, database_connection: sqlite3.Connection)->None:
+    ''' This function saves json-based weather data into the database
+
+        Args:
+            data (): It represents the data to be saved in the database
+            database_connection (sqlite3.Connection): It represents the database connection object
+
+        Return:
+            None
+    '''
+    if not isinstance(database_connection, sqlite3.Connection):
+        raise TypeError(f'The database connection (e.g., {database_connection}) should be a connection object type')
+
+    cursor = database_connection.cursor()
+
+    timestamp = datetime.now()
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Weather (
+            
+            Country TEXT,
+            City TEXT,
+            Temperature REAL,
+            Humidity INTEGER,
+            Low_Temperature REAL,
+            High_Temperature REAL,
+            Weather_Category TEXT,
+            Wind_Speed REAL
+        )
+        """)
+
+    # Insert each row of parsed_data into the database
+    for _, row in data.iterrows():
+        cursor.execute("""
+        INSERT INTO Weather (Timestamp, Country, City, Temperature, Humidity, Low_Temperature, High_Temperature, Weather_Category, Wind_Speed)
+        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+              row['Country'],
+              row['City'],
+              row['Temperature'],
+              row['Humidity'],
+              row['Low Temperature'],
+              row['High Temperature'],
+              row['Weather Category'],
+              row['Wind Speed']))
+
+    database_connection.commit()
+    
+    res = cursor.execute('SELECT * FROM Weather')
+    rows = res.fetchall()
+    for row in rows:
+        print(row)
+        
+    cursor.close()
 
 def fetch_weather_data(city: str,
                        country=None,
