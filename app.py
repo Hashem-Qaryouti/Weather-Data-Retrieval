@@ -4,6 +4,7 @@ from weather_data_retrieval import fetch_weather_data, parse_json, database_conn
 app = Flask(__name__)
 
 # Define the home route
+# Home route
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -11,6 +12,7 @@ def index():
 @app.route('/weather', methods=['POST'])
 def weather():
     city = request.json.get('city')
+    print(f'The provided city is {city}')
     country = request.json.get('country', 'US')
     state = request.json.get('state', None)
     units = request.json.get('units', 'metric')
@@ -18,8 +20,10 @@ def weather():
     weather_data = fetch_weather_data(city, country, state, units)
 
     try:
+        # Parse the JSON response into a DataFrame
         parsed_data = parse_json(weather_data)
 
+        # Render the DataFrame as HTML
         return render_template('weather.html', table=parsed_data.to_html(classes='table table-striped', index=False))
     except Exception as e:
         print(f"Error rendering the table: {e}")
