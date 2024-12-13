@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from weather_data_retrieval import fetch_weather_data, parse_json, database_connection,save_to_database
+from weather_data_retrieval import database_name, weather_df_global
+
 
 app = Flask(__name__)
 
@@ -28,6 +30,14 @@ def weather():
     except Exception as e:
         print(f"Error rendering the table: {e}")
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/store', methods=['POST'])
+def store_data():
+    connection = database_connection(database_name)
+    print(weather_df_global)
+    save_to_database(weather_df_global,connection)
+
+    return jsonify({"message": "Data stored successfully."})
     
 if __name__ == '__main__':
     app.run(debug=True)
